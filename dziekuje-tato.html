@@ -4,155 +4,233 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: wąska kolumna. Na górze list, pod nim pokwitowanie inwestycji ze stopniowo rosnącym zwrotem. */
+/* Układ: pełnoszerokie płótno z żywymi cząsteczkami układającymi napisy, pod nim krótki list. Jeden świat: nocne niebo i zieleń zysku. */
 :root {
-  --bg: #eef1f5;
-  --paper: #fbfcfd;
-  --ink: #14202e;
-  --muted: #5b6878;
-  --line: #d5dce5;
-  --gain: #0f7a4d;
-  --gain-soft: #dcf2e7;
+  --bg: #070b10;
+  --ink: #e8eef5;
+  --muted: #8d9bad;
+  --line: #1d2836;
+  --gain: #4fd699;
+  --sky: #5ab0ff;
   --f-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
   --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0d141c; --paper: #151f2b; --ink: #e8eef5; --muted: #98a6b7;
-    --line: #2a3747; --gain: #4fd699; --gain-soft: #15372a; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0d141c; --paper: #151f2b; --ink: #e8eef5; --muted: #98a6b7;
-  --line: #2a3747; --gain: #4fd699; --gain-soft: #15372a; color-scheme: dark;
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body {
   background: var(--bg); color: var(--ink);
   font-family: var(--f-body); font-size: 17px; line-height: 1.65;
-  padding-block: 48px 72px;
+  padding-block: 24px 72px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
-main { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
-h1 {
-  font-family: var(--f-display); font-weight: 800; font-size: clamp(2.6rem, 11vw, 4.6rem);
-  line-height: 1; letter-spacing: -0.03em; margin: 0; text-wrap: balance;
-}
+.wrap { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+.bar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.stage { position: relative; width: 100%; height: clamp(260px, 52vw, 460px);
+  border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 120%, #0f2a22 0%, var(--bg) 62%); }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; cursor: pointer; }
+.hint { position: absolute; left: 14px; bottom: 10px; font-family: var(--f-mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; pointer-events: none; }
+.dots { position: absolute; right: 14px; bottom: 12px; display: flex; gap: 6px; }
+.dots i { width: 18px; height: 3px; background: var(--line); border-radius: 2px; transition: background .3s; }
+.dots i.on { background: var(--gain); }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.9rem, 6vw, 3rem); line-height: 1.05; letter-spacing: -0.025em; margin: 0; text-wrap: balance; }
 h1 span { color: var(--gain); }
-.eyebrow { font-family: var(--f-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
-.letter { display: flex; flex-direction: column; gap: 18px; max-width: 60ch; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+.cols > * { min-width: 0; }
+.letter { display: flex; flex-direction: column; gap: 16px; max-width: 60ch; }
 .letter p { margin: 0; }
 .sign { font-family: var(--f-display); font-weight: 500; font-size: 1.25rem; }
-.who { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.9rem; color: var(--muted); }
-.who input {
-  font: inherit; color: var(--ink); background: var(--paper);
-  border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; width: 11ch;
-}
-.who input:focus-visible, button:focus-visible { outline: 2px solid var(--gain); outline-offset: 2px; }
-
-.receipt {
-  background: var(--paper); border: 1px solid var(--line); border-radius: 4px;
-  padding: 28px 24px; font-family: var(--f-mono); font-size: 0.86rem; line-height: 1.5;
-  display: flex; flex-direction: column; gap: 18px;
-}
-.receipt h2 { font-family: var(--f-display); font-size: 1.35rem; letter-spacing: -0.01em; margin: 0; font-weight: 800; }
-.rows { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
-.rows li { display: flex; justify-content: space-between; gap: 16px; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
-.rows li span:first-child { min-width: 0; }
-.rows li span:last-child { text-align: right; color: var(--gain); white-space: nowrap; font-weight: 500; }
-.rows li.muted span:last-child { color: var(--muted); }
-.roi { display: flex; flex-direction: column; gap: 8px; }
-.roi-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.bar { height: 10px; background: var(--gain-soft); border-radius: 99px; overflow: hidden; }
-.bar > i { display: block; height: 100%; width: 0; background: var(--gain); border-radius: 99px; transition: width 1.4s cubic-bezier(.2,.8,.2,1); }
-.roi-note { color: var(--muted); font-size: 0.78rem; }
-button {
-  font: inherit; font-family: var(--f-mono); font-size: 0.82rem; cursor: pointer;
-  color: var(--gain); background: transparent; border: 1px solid var(--gain);
-  border-radius: 6px; padding: 8px 14px; align-self: flex-start;
-}
-button:hover { background: var(--gain-soft); }
-@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+.side { display: flex; flex-direction: column; gap: 14px; font-family: var(--f-mono); font-size: 0.84rem; }
+.stat { display: flex; justify-content: space-between; gap: 14px; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
+.stat b { color: var(--gain); font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
+.who { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.85rem; color: var(--muted); }
+.who input { font: inherit; color: var(--ink); background: #0e1622; border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; width: 11ch; }
+.who input:focus-visible, canvas:focus-visible { outline: 2px solid var(--gain); outline-offset: 2px; }
+@media (max-width: 720px) { .cols { grid-template-columns: 1fr; } }
 </style>
 
-<main>
-  <header>
-    <p class="eyebrow">Pokwitowanie wdzięczności</p>
-    <h1>Dziękuję, <span id="name">tato</span>.</h1>
-  </header>
+<div class="wrap">
+  <div class="bar"><span>Pokwitowanie wdzięczności</span><span id="clock">—</span></div>
 
-  <section class="letter">
-    <p>Zapłaciłeś za plan Pro i nie musiałeś tego robić. Nie zrobiłeś tego dla siebie, tylko dlatego, że uwierzyłeś, że mogę z tego wyciągnąć coś dobrego.</p>
-    <p>Dlatego nie chcę, żeby to była zwykła subskrypcja, która sobie wisi na koncie. Chcę, żeby to była inwestycja, która się zwraca. Poniżej jest pierwsze rozliczenie.</p>
-    <p>Dzięki, że we mnie inwestujesz. Postaram się, żeby to był najlepszy zakup, jaki zrobiłeś.</p>
-    <p class="sign">Twój syn</p>
-    <label class="who" for="nameInput">Jak się do niego zwracam?
-      <input id="nameInput" type="text" value="tato" maxlength="20" autocomplete="off">
-    </label>
-  </section>
+  <div class="stage">
+    <canvas id="cv" tabindex="0" aria-label="Animowany napis: Dziękuję, tato. Kliknij, żeby zmienić napis."></canvas>
+    <div class="hint">dotknij i poruszaj · kliknij, żeby zmienić</div>
+    <div class="dots" id="dots"></div>
+  </div>
 
-  <section class="receipt" aria-labelledby="rt">
-    <h2 id="rt">Rozliczenie inwestycji</h2>
-    <ul class="rows">
-      <li class="muted"><span>Inwestor</span><span id="inv">tato</span></li>
-      <li class="muted"><span>Produkt</span><span>Claude Pro</span></li>
-      <li class="muted"><span>Udział inwestora w sukcesie</span><span>100%</span></li>
-      <li><span>Nowe umiejętności</span><span>+ rosną</span></li>
-      <li><span>Projekty, które naprawdę działają</span><span>+ rosną</span></li>
-      <li><span>Powód do dumy</span><span>+ obiecuję</span></li>
-    </ul>
-    <div class="roi">
-      <div class="roi-head"><span>Zwrot z inwestycji</span><strong id="pct">0%</strong></div>
-      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barWrap"><i id="bar"></i></div>
-      <span class="roi-note">Wskaźnik rośnie z każdym dniem pracy. Nie zatrzymuje się na 100%.</span>
-    </div>
-    <button id="again" type="button">Policz jeszcze raz</button>
-  </section>
-</main>
+  <h1>Zapłaciłeś za plan Pro. <span>Zrobię z tego inwestycję, która się zwraca.</span></h1>
+
+  <div class="cols">
+    <section class="letter">
+      <p>Nie musiałeś tego robić. Zrobiłeś to, bo uwierzyłeś, że mogę z tego wyciągnąć coś dobrego, i to jest dla mnie ważniejsze niż sama subskrypcja.</p>
+      <p>Chcę, żeby to się opłaciło. Nie jako abonament, który wisi na koncie, tylko jako rzeczy, które naprawdę działają i które możesz zobaczyć.</p>
+      <p>Dzięki, że we mnie inwestujesz.</p>
+      <p class="sign">Twój syn</p>
+      <label class="who" for="nameInput">Jak się do niego zwracam?
+        <input id="nameInput" type="text" value="tato" maxlength="14" autocomplete="off">
+      </label>
+    </section>
+    <aside class="side" aria-label="Rozliczenie">
+      <div class="stat"><span>Inwestor</span><b id="inv">tato</b></div>
+      <div class="stat"><span>Produkt</span><b>Claude Pro</b></div>
+      <div class="stat"><span>Udział inwestora w sukcesie</span><b>100%</b></div>
+      <div class="stat"><span>Dni od pierwszego zakupu</span><b id="days">—</b></div>
+      <div class="stat"><span>Zwrot z inwestycji</span><b>rośnie</b></div>
+    </aside>
+  </div>
+</div>
 
 <script>
 (function () {
-  var nameEl = document.getElementById('name');
-  var inv = document.getElementById('inv');
+  var cv = document.getElementById('cv');
+  var ctx = cv.getContext('2d');
+  var dotsEl = document.getElementById('dots');
   var input = document.getElementById('nameInput');
-  var bar = document.getElementById('bar');
-  var wrap = document.getElementById('barWrap');
-  var pct = document.getElementById('pct');
-  var target = 127;
-  var timer = null;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W = 0, H = 0, dpr = 1;
+  var parts = [], idx = 0, lastSwitch = 0, mouse = { x: -999, y: -999, on: false };
+  var name = 'tato';
 
-  function setName(v) {
-    v = (v || '').trim() || 'tato';
-    nameEl.textContent = v;
-    inv.textContent = v;
+  function phrases() {
+    var n = name.toUpperCase();
+    return ['DZIĘKUJĘ', n, 'ZA WIARĘ', 'W MNIE'];
   }
-  try { var saved = localStorage.getItem('dt-name'); if (saved) input.value = saved; } catch (e) {}
-  setName(input.value);
-  input.addEventListener('input', function () {
-    setName(input.value);
-    try { localStorage.setItem('dt-name', input.value); } catch (e) {}
-  });
 
-  function run() {
-    cancelAnimationFrame(timer);
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    bar.style.width = '0';
-    var start = null, dur = reduce ? 1 : 1400;
-    function step(t) {
-      if (start === null) start = t;
-      var p = Math.min(1, (t - start) / dur);
-      var e = 1 - Math.pow(1 - p, 3);
-      var v = Math.round(target * e);
-      pct.textContent = v + '%';
-      wrap.setAttribute('aria-valuenow', Math.min(100, v));
-      bar.style.width = Math.min(100, v) + '%';
-      if (p < 1) timer = requestAnimationFrame(step);
+  try { var s = localStorage.getItem('dt-name'); if (s) { input.value = s; name = s.trim() || 'tato'; } } catch (e) {}
+
+  var dots = [];
+  function buildDots() {
+    dotsEl.innerHTML = '';
+    dots = phrases().map(function () { var d = document.createElement('i'); dotsEl.appendChild(d); return d; });
+    markDot();
+  }
+  function markDot() { dots.forEach(function (d, i) { d.className = i === idx ? 'on' : ''; }); }
+
+  function targetsFor(text) {
+    var off = document.createElement('canvas');
+    off.width = W; off.height = H;
+    var o = off.getContext('2d');
+    var size = Math.min(H * 0.55, 200);
+    o.font = '800 ' + size + 'px "Bricolage Grotesque", Arial, sans-serif';
+    var w = o.measureText(text).width;
+    if (w > W * 0.88) { size *= (W * 0.88) / w; o.font = '800 ' + size + 'px "Bricolage Grotesque", Arial, sans-serif'; }
+    o.textAlign = 'center'; o.textBaseline = 'middle';
+    o.fillStyle = '#fff';
+    o.fillText(text, W / 2, H / 2 - 6);
+    var data = o.getImageData(0, 0, W, H).data;
+    var step = Math.max(3, Math.round(size / 34));
+    var pts = [];
+    for (var y = 0; y < H; y += step) for (var x = 0; x < W; x += step) {
+      if (data[(y * W + x) * 4 + 3] > 128) pts.push([x, y]);
     }
-    timer = requestAnimationFrame(step);
+    return pts;
   }
-  document.getElementById('again').addEventListener('click', run);
-  run();
+
+  function assign(text, instant) {
+    var pts = targetsFor(text);
+    // przemieszaj, żeby ruch był organiczny
+    for (var i = pts.length - 1; i > 0; i--) { var j = (Math.random() * (i + 1)) | 0; var t = pts[i]; pts[i] = pts[j]; pts[j] = t; }
+    var need = pts.length;
+    while (parts.length < need) {
+      parts.push({ x: Math.random() * W, y: Math.random() * H, vx: 0, vy: 0, tx: 0, ty: 0, r: 0.8 + Math.random() * 1.2, hue: Math.random() });
+    }
+    parts.length = Math.max(need, 1);
+    for (var k = 0; k < parts.length; k++) {
+      var p = parts[k], tp = pts[k] || [W / 2, H / 2];
+      p.tx = tp[0]; p.ty = tp[1];
+      if (instant) { p.x = p.tx; p.y = p.ty; p.vx = p.vy = 0; }
+    }
+  }
+
+  function resize() {
+    var r = cv.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    assign(phrases()[idx], true);
+    if (reduce) draw();
+  }
+
+  function next() {
+    idx = (idx + 1) % phrases().length;
+    markDot();
+    assign(phrases()[idx], false);
+    // mały wybuch przy zmianie
+    parts.forEach(function (p) { var a = Math.random() * 6.283, f = 2 + Math.random() * 5; p.vx += Math.cos(a) * f; p.vy += Math.sin(a) * f; });
+    lastSwitch = performance.now();
+    if (reduce) { assign(phrases()[idx], true); draw(); }
+  }
+
+  function draw() {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      var m = p.x / W;
+      var g = 150 + Math.round(60 * (1 - m));   // zieleń -> błękit wzdłuż osi X
+      var b = 140 + Math.round(115 * m);
+      ctx.fillStyle = 'rgba(' + (60 + Math.round(30 * p.hue)) + ',' + g + ',' + b + ',0.85)';
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+    }
+  }
+
+  function tick(now) {
+    var R = Math.min(W, 520) * 0.16;
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      p.vx += (p.tx - p.x) * 0.012;
+      p.vy += (p.ty - p.y) * 0.012;
+      if (mouse.on) {
+        var dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
+        if (d2 < R * R && d2 > 0.01) { var d = Math.sqrt(d2), f = (1 - d / R) * 2.2; p.vx += dx / d * f; p.vy += dy / d * f; }
+      }
+      p.vx *= 0.9; p.vy *= 0.9;
+      p.x += p.vx; p.y += p.vy;
+    }
+    draw();
+    if (now - lastSwitch > 4200) { lastSwitch = now; next(); }
+    requestAnimationFrame(tick);
+  }
+
+  function pos(e) { var r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  cv.addEventListener('pointermove', function (e) { var p = pos(e); mouse.x = p.x; mouse.y = p.y; mouse.on = true; });
+  cv.addEventListener('pointerleave', function () { mouse.on = false; });
+  cv.addEventListener('click', next);
+  cv.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); next(); } });
+
+  input.addEventListener('input', function () {
+    name = input.value.trim() || 'tato';
+    document.getElementById('inv').textContent = name;
+    try { localStorage.setItem('dt-name', input.value); } catch (e) {}
+    if (idx === 1) { assign(phrases()[1], false); if (reduce) { assign(phrases()[1], true); draw(); } }
+  });
+  document.getElementById('inv').textContent = name;
+
+  // zegar i licznik dni od chwili pierwszego otwarcia
+  var days = document.getElementById('days');
+  var first = Date.now();
+  try { var f = localStorage.getItem('dt-first'); if (f) first = +f; else localStorage.setItem('dt-first', String(first)); } catch (e) {}
+  function clock() {
+    var d = new Date();
+    document.getElementById('clock').textContent = d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+    days.textContent = String(Math.floor((Date.now() - first) / 86400000) + 1);
+  }
+  clock();
+
+  buildDots();
+  function boot() {
+    resize();
+    window.addEventListener('resize', resize);
+    if (!reduce) { lastSwitch = performance.now(); requestAnimationFrame(tick); }
+  }
+  // poczekaj na krój pisma, żeby cząsteczki ułożyły właściwy kształt liter
+  if (document.fonts && document.fonts.load) {
+    document.fonts.load('800 100px "Bricolage Grotesque"').then(boot, boot);
+  } else boot();
 })();
 </script>
