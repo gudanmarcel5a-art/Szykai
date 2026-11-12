@@ -1,0 +1,12 @@
+{
+  "name": "ostatni-pociag-o-polnocy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Krótki film animowany 2D (canvas) — 1080x1920, 30 FPS, 25 s",
+  "scripts": {
+    "audio": "python3 audio.py",
+    "render": "node render.mjs",
+    "preview": "python3 -m http.server 8080"
+  },
+  "dependencies": { "playwright": "^1.50.0" }
+}
