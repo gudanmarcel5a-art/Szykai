@@ -2,3 +2,6 @@ out/frames/
 out/stills/
 out/*.png
 node_modules/
+stickfight/out/frames/
+stickfight/out/*.png
+stickfight/out/stills/
