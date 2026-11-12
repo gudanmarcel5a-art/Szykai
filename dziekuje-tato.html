@@ -1,0 +1,158 @@
+<title>Dziękuję, tato</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: wąska kolumna. Na górze list, pod nim pokwitowanie inwestycji ze stopniowo rosnącym zwrotem. */
+:root {
+  --bg: #eef1f5;
+  --paper: #fbfcfd;
+  --ink: #14202e;
+  --muted: #5b6878;
+  --line: #d5dce5;
+  --gain: #0f7a4d;
+  --gain-soft: #dcf2e7;
+  --f-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d141c; --paper: #151f2b; --ink: #e8eef5; --muted: #98a6b7;
+    --line: #2a3747; --gain: #4fd699; --gain-soft: #15372a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d141c; --paper: #151f2b; --ink: #e8eef5; --muted: #98a6b7;
+  --line: #2a3747; --gain: #4fd699; --gain-soft: #15372a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 17px; line-height: 1.65;
+  padding-block: 48px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+h1 {
+  font-family: var(--f-display); font-weight: 800; font-size: clamp(2.6rem, 11vw, 4.6rem);
+  line-height: 1; letter-spacing: -0.03em; margin: 0; text-wrap: balance;
+}
+h1 span { color: var(--gain); }
+.eyebrow { font-family: var(--f-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
+.letter { display: flex; flex-direction: column; gap: 18px; max-width: 60ch; }
+.letter p { margin: 0; }
+.sign { font-family: var(--f-display); font-weight: 500; font-size: 1.25rem; }
+.who { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.9rem; color: var(--muted); }
+.who input {
+  font: inherit; color: var(--ink); background: var(--paper);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; width: 11ch;
+}
+.who input:focus-visible, button:focus-visible { outline: 2px solid var(--gain); outline-offset: 2px; }
+
+.receipt {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 4px;
+  padding: 28px 24px; font-family: var(--f-mono); font-size: 0.86rem; line-height: 1.5;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.receipt h2 { font-family: var(--f-display); font-size: 1.35rem; letter-spacing: -0.01em; margin: 0; font-weight: 800; }
+.rows { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.rows li { display: flex; justify-content: space-between; gap: 16px; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
+.rows li span:first-child { min-width: 0; }
+.rows li span:last-child { text-align: right; color: var(--gain); white-space: nowrap; font-weight: 500; }
+.rows li.muted span:last-child { color: var(--muted); }
+.roi { display: flex; flex-direction: column; gap: 8px; }
+.roi-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.bar { height: 10px; background: var(--gain-soft); border-radius: 99px; overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--gain); border-radius: 99px; transition: width 1.4s cubic-bezier(.2,.8,.2,1); }
+.roi-note { color: var(--muted); font-size: 0.78rem; }
+button {
+  font: inherit; font-family: var(--f-mono); font-size: 0.82rem; cursor: pointer;
+  color: var(--gain); background: transparent; border: 1px solid var(--gain);
+  border-radius: 6px; padding: 8px 14px; align-self: flex-start;
+}
+button:hover { background: var(--gain-soft); }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+</style>
+
+<main>
+  <header>
+    <p class="eyebrow">Pokwitowanie wdzięczności</p>
+    <h1>Dziękuję, <span id="name">tato</span>.</h1>
+  </header>
+
+  <section class="letter">
+    <p>Zapłaciłeś za plan Pro i nie musiałeś tego robić. Nie zrobiłeś tego dla siebie, tylko dlatego, że uwierzyłeś, że mogę z tego wyciągnąć coś dobrego.</p>
+    <p>Dlatego nie chcę, żeby to była zwykła subskrypcja, która sobie wisi na koncie. Chcę, żeby to była inwestycja, która się zwraca. Poniżej jest pierwsze rozliczenie.</p>
+    <p>Dzięki, że we mnie inwestujesz. Postaram się, żeby to był najlepszy zakup, jaki zrobiłeś.</p>
+    <p class="sign">Twój syn</p>
+    <label class="who" for="nameInput">Jak się do niego zwracam?
+      <input id="nameInput" type="text" value="tato" maxlength="20" autocomplete="off">
+    </label>
+  </section>
+
+  <section class="receipt" aria-labelledby="rt">
+    <h2 id="rt">Rozliczenie inwestycji</h2>
+    <ul class="rows">
+      <li class="muted"><span>Inwestor</span><span id="inv">tato</span></li>
+      <li class="muted"><span>Produkt</span><span>Claude Pro</span></li>
+      <li class="muted"><span>Udział inwestora w sukcesie</span><span>100%</span></li>
+      <li><span>Nowe umiejętności</span><span>+ rosną</span></li>
+      <li><span>Projekty, które naprawdę działają</span><span>+ rosną</span></li>
+      <li><span>Powód do dumy</span><span>+ obiecuję</span></li>
+    </ul>
+    <div class="roi">
+      <div class="roi-head"><span>Zwrot z inwestycji</span><strong id="pct">0%</strong></div>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barWrap"><i id="bar"></i></div>
+      <span class="roi-note">Wskaźnik rośnie z każdym dniem pracy. Nie zatrzymuje się na 100%.</span>
+    </div>
+    <button id="again" type="button">Policz jeszcze raz</button>
+  </section>
+</main>
+
+<script>
+(function () {
+  var nameEl = document.getElementById('name');
+  var inv = document.getElementById('inv');
+  var input = document.getElementById('nameInput');
+  var bar = document.getElementById('bar');
+  var wrap = document.getElementById('barWrap');
+  var pct = document.getElementById('pct');
+  var target = 127;
+  var timer = null;
+
+  function setName(v) {
+    v = (v || '').trim() || 'tato';
+    nameEl.textContent = v;
+    inv.textContent = v;
+  }
+  try { var saved = localStorage.getItem('dt-name'); if (saved) input.value = saved; } catch (e) {}
+  setName(input.value);
+  input.addEventListener('input', function () {
+    setName(input.value);
+    try { localStorage.setItem('dt-name', input.value); } catch (e) {}
+  });
+
+  function run() {
+    cancelAnimationFrame(timer);
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    bar.style.width = '0';
+    var start = null, dur = reduce ? 1 : 1400;
+    function step(t) {
+      if (start === null) start = t;
+      var p = Math.min(1, (t - start) / dur);
+      var e = 1 - Math.pow(1 - p, 3);
+      var v = Math.round(target * e);
+      pct.textContent = v + '%';
+      wrap.setAttribute('aria-valuenow', Math.min(100, v));
+      bar.style.width = Math.min(100, v) + '%';
+      if (p < 1) timer = requestAnimationFrame(step);
+    }
+    timer = requestAnimationFrame(step);
+  }
+  document.getElementById('again').addEventListener('click', run);
+  run();
+})();
+</script>
